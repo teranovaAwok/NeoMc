@@ -31,20 +31,55 @@
             line-height: 1.6;
         }
 
-        /* Custom Cursor Glow */
-        .cursor-glow {
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
+        /* Custom Cursor - Aylanuvchi yulduzcha + glow */
+        .cursor-star {
+            width: 40px;
+            height: 40px;
             position: fixed;
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            mix-blend-mode: multiply;
+            transition: transform 0.15s ease-out;
         }
 
-        /* Animated Background Grid */
+        .cursor-star::before {
+            content: '✦';
+            font-size: 35px;
+            color: var(--accent);
+            display: block;
+            text-align: center;
+            line-height: 40px;
+            animation: rotate 4s linear infinite, pulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px var(--accent)) drop-shadow(0 0 20px var(--accent)) drop-shadow(0 0 30px rgba(249, 115, 22, 0.5));
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .cursor-glow {
+            width: 60px;
+            height: 60px;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+            50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.3; }
+        }
+
         .bg-grid {
             position: fixed;
             inset: 0;
@@ -74,7 +109,6 @@
             bottom: -150px; right: -150px;
         }
 
-        /* Navigation */
         nav {
             position: fixed;
             top: 20px;
@@ -132,7 +166,6 @@
 
         .nav-links a:hover { color: var(--accent); }
 
-        /* Hero Section */
         .hero {
             min-height: 100vh;
             display: grid;
@@ -269,7 +302,6 @@
             box-shadow: 0 8px 25px rgba(249, 115, 22, 0.15);
         }
 
-        /* 3D Character Container - LEFT SIDE */
         .hero-visual {
             position: relative;
             height: 500px;
@@ -319,9 +351,15 @@
             position: relative;
             z-index: 2;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
 
-        /* Floating Badges around Avatar */
+        .character-model img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .floating-badge {
             position: absolute;
             background: var(--bg-card);
@@ -362,7 +400,6 @@
         }
         .badge-youtuber::before { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
 
-        /* Sections */
         section {
             padding: 100px 5%;
             max-width: 1200px;
@@ -409,7 +446,6 @@
             border-radius: 2px;
         }
 
-        /* About Section */
         .about-container {
             display: grid;
             grid-template-columns: 300px 1fr;
@@ -431,6 +467,12 @@
             border: 1px solid var(--border);
             position: relative;
             overflow: hidden;
+        }
+
+        .about-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .about-content h3 {
@@ -470,7 +512,6 @@
             font-weight: 500;
         }
 
-        /* Skills Grid - 2 on top, 3 on bottom */
         .skills-container {
             max-width: 1000px;
             margin: 0 auto;
@@ -535,7 +576,6 @@
             line-height: 1.6;
         }
 
-        /* Projects Section */
         .projects-list {
             display: flex;
             flex-direction: column;
@@ -640,7 +680,6 @@
             font-size: 0.95rem;
         }
 
-        /* Social Media */
         .social-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -705,7 +744,6 @@
         .social-info h3 { font-size: 1.15rem; margin-bottom: 4px; color: var(--text); }
         .social-info p { font-size: 0.9rem; color: var(--text-muted); }
 
-        /* Footer */
         footer {
             border-top: 1px solid var(--border);
             padding: 40px 5%;
@@ -719,7 +757,6 @@
             font-size: 0.9rem;
         }
 
-        /* Scroll Reveal */
         .reveal {
             opacity: 0;
             transform: translateY(40px);
@@ -731,7 +768,6 @@
             transform: translateY(0);
         }
 
-        /* Responsive */
         @media (max-width: 968px) {
             .hero { grid-template-columns: 1fr; text-align: center; }
             .hero-buttons, .hero-stats { justify-content: center; }
@@ -745,12 +781,12 @@
 </head>
 <body>
 
+    <div class="cursor-star" id="cursorStar"></div>
     <div class="cursor-glow" id="cursorGlow"></div>
     <div class="bg-grid"></div>
     <div class="bg-orb orb-1"></div>
     <div class="bg-orb orb-2"></div>
 
-    <!-- Navigation -->
     <nav>
         <div class="logo">
             <div class="logo-icon"></div>
@@ -764,15 +800,17 @@
         </ul>
     </nav>
 
-    <!-- Hero with 3D Character on LEFT -->
     <section class="hero" id="home">
         <div class="hero-visual" id="heroVisual">
             <div class="character-container" id="characterContainer">
                 <div class="character-card">
-                    <div class="character-model"></div>
+                    <div class="character-model">
+                        <!-- AVATAR RASM QO'SHILDI -->
+                        <img src="channels4_profile.jpg" alt="NeoMc Avatar">
+                    </div>
                 </div>
                 <div class="floating-badge badge-pvper">⚔️ PvPer</div>
-                <div class="floating-badge badge-creator">🎨 Creator</div>
+                <div class="floating-badge badge-creator"> Creator</div>
                 <div class="floating-badge badge-youtuber">▶️ Youtuber</div>
             </div>
         </div>
@@ -788,17 +826,18 @@
                 <div class="stat-badge"><strong>BIZING JAMOA</strong></div>
             </div>
             <div class="hero-buttons">
-                <!-- O'ZGARGAN JOY: Bog'lanish tugmasi endi #social ga olib boradi -->
-                <a href="#social" class="btn btn-primary"> Bog'lanish</a>
-                <a href="#projects" class="btn btn-secondary"> Serverimiz</a>
+                <a href="#about-section" class="btn btn-primary">📊 Bog'lanish</a>
+                <a href="#projects" class="btn btn-secondary">🎮 Serverimiz</a>
             </div>
         </div>
     </section>
 
-    <!-- About Section -->
     <section id="about-section">
         <div class="about-container reveal" data-tilt>
-            <div class="about-avatar"></div>
+            <div class="about-avatar">
+                <!-- ABOUT AVATAR RASM QO'SHILDI -->
+                <img src="channels4_profile.jpg" alt="NeoMc">
+            </div>
             <div class="about-content">
                 <h3>Salom Barchaga sizlar bilan men NeoMc</h3>
                 <p>
@@ -807,13 +846,12 @@
                 <div class="about-tags">
                     <span class="about-tag">💻 Server Architecture</span>
                     <span class="about-tag">🎬 Content Creator</span>
-                    <span class="about-tag">🎮 UNDEAD Team</span>
+                    <span class="about-tag"> UNDEAD Team</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Skills Section -->
     <section id="skills">
         <div class="section-header reveal">
             <div class="section-label">EXPERTISE</div>
@@ -823,7 +861,6 @@
         </div>
 
         <div class="skills-container">
-            <!-- Top Row - 2 Skills -->
             <div class="skills-top">
                 <div class="skill-card reveal" data-tilt>
                     <div class="skill-icon">⚔️</div>
@@ -832,13 +869,12 @@
                 </div>
 
                 <div class="skill-card reveal" data-tilt>
-                    <div class="skill-icon">🎬</div>
+                    <div class="skill-icon"></div>
                     <div class="skill-category">Youtube Skills</div>
                     <p>Minecraft foydali content pvperlar uchun, yosh kuzatuvchilar uchun qiziqarli survival videolar</p>
                 </div>
             </div>
 
-            <!-- Bottom Row - 3 Skills -->
             <div class="skills-bottom">
                 <div class="skill-card reveal" data-tilt>
                     <div class="skill-icon">⚙️</div>
@@ -861,7 +897,6 @@
         </div>
     </section>
 
-    <!-- Projects Section -->
     <section id="projects">
         <div class="section-header reveal">
             <div class="section-label">PROJECTS</div>
@@ -872,7 +907,7 @@
 
         <div class="projects-list">
             <div class="project-card reveal" data-tilt>
-                <div class="project-icon">👥</div>
+                <div class="project-icon"></div>
                 <div class="project-content">
                     <div class="project-header">
                         <h3 class="project-title">UNDEAD TEAM</h3>
@@ -905,7 +940,6 @@
         </div>
     </section>
 
-    <!-- Social Media Section -->
     <section id="social">
         <div class="section-header reveal">
             <div class="section-label">CONNECT</div>
@@ -915,7 +949,7 @@
         </div>
 
         <div class="social-grid">
-            <a href="#" class="social-card reveal" data-tilt>
+            <a href="https://www.youtube.com/@neominecraftt" target="_blank" class="social-card reveal" data-tilt>
                 <div class="social-icon icon-youtube">▶️</div>
                 <div class="social-info">
                     <h3>YouTube</h3>
@@ -923,7 +957,7 @@
                 </div>
             </a>
 
-            <a href="#" class="social-card reveal" data-tilt>
+            <a href="https://t.me/komilovgg" target="_blank" class="social-card reveal" data-tilt>
                 <div class="social-icon icon-telegram">📱</div>
                 <div class="social-info">
                     <h3>Telegram</h3>
@@ -931,7 +965,7 @@
                 </div>
             </a>
 
-            <a href="#" class="social-card reveal" data-tilt>
+            <a href="https://discord.gg/YuYw5WgZA" target="_blank" class="social-card reveal" data-tilt>
                 <div class="social-icon icon-discord">💬</div>
                 <div class="social-info">
                     <h3>Discord</h3>
@@ -941,13 +975,12 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <p class="footer-text">© 2026 NeoMc — Official Portfolio & Minecraft Creations. All rights reserved.</p>
     </footer>
 
     <script>
-        // Mouse Follow & 3D Tilt Effects (INWARD/INSIDE tilt)
+        const cursorStar = document.getElementById('cursorStar');
         const cursorGlow = document.getElementById('cursorGlow');
         const characterContainer = document.getElementById('characterContainer');
         const heroVisual = document.getElementById('heroVisual');
@@ -958,16 +991,16 @@
             mouseX = e.clientX;
             mouseY = e.clientY;
             
-            // Cursor glow follows mouse
+            cursorStar.style.left = mouseX + 'px';
+            cursorStar.style.top = mouseY + 'px';
+            
             cursorGlow.style.left = mouseX + 'px';
             cursorGlow.style.top = mouseY + 'px';
             
-            // 3D tilt effect for character (INWARD/INSIDE)
             const rect = characterContainer.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             
-            // Negative values for inward/concave tilt
             const rotateX = (centerY - mouseY) / 25;
             const rotateY = (mouseX - centerX) / 25;
             
@@ -975,13 +1008,11 @@
             characterContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         });
 
-        // Reset character animation when mouse leaves hero section
         heroVisual.addEventListener('mouseleave', () => {
             characterContainer.style.transition = 'transform 0.5s ease-out';
             characterContainer.style.transform = 'rotateX(0) rotateY(0)';
         });
 
-        // 3D Tilt Effect for ALL cards with data-tilt (INWARD/INSIDE)
         document.querySelectorAll('[data-tilt]').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
@@ -991,7 +1022,6 @@
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
                 
-                // Negative values for inward/concave tilt (inside effect)
                 const rotateX = (centerY - y) / 15;
                 const rotateY = (x - centerX) / 15;
                 
@@ -1005,7 +1035,6 @@
             });
         });
 
-        // Scroll Reveal
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1016,7 +1045,6 @@
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
